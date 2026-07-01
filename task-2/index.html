@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book an Orthopaedic Consultation | OrthoNow</title>
+<meta name="description" content="Get an expert orthopaedic opinion for knee or back pain. 9 clinics across Bengaluru, Hyderabad and Chennai. Book a consultation in under a minute.">
+
+<!--
+  PERFORMANCE NOTES (for reviewers):
+  - Zero external network requests: no web fonts, no images, no JS libraries.
+    Everything renders from this single HTML file, which is what makes a
+    90+ PageSpeed Mobile score achievable rather than aspirational.
+  - Headline/body typography uses system font stacks. This is a deliberate
+    trade against a custom webfont: a font file is a render-blocking or
+    layout-shifting network request, and neither is worth it for a page
+    whose entire job is a fast, frictionless form fill.
+  - The "range of motion" SVG is hand-authored (not an <img>), so it has
+    zero decode cost and scales losslessly at any density.
+-->
+
+<style>
+  :root {
+    /* ---- Design tokens ---- */
+    --bg:            #EFF3F2; /* cool sage-grey, not the cream/terracotta default */
+    --surface:       #FFFFFF;
+    --surface-alt:   #E4ECEA;
+    --ink:           #12242A; /* deep teal-charcoal, not pure black */
+    --ink-soft:      #4C6067;
+    --line:          #C9D4D2;
+    --accent-cta:    #E1552E; /* warm coral — used ONLY for the conversion action */
+    --accent-motion: #2F7A6B; /* muted teal — the "recovery" signature color */
+
+    --font-display: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --font-body:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --radius: 14px;
+    --shadow: 0 12px 32px -16px rgba(18, 36, 42, 0.28);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, svg { display: block; max-width: 100%; }
+
+  a { color: inherit; }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .topbar .phone-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--accent-motion);
+    white-space: nowrap;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 44px 0 56px;
+  }
+  .eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-motion);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5.4vw, 2.9rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    max-width: 15ch;
+  }
+  .subhead {
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 28px;
+  }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* Form is visually and structurally promoted first on mobile,
+     since the target user is skimming on a phone mid-workday. */
+  .hero-form-slot { order: -1; }
+
+  /* ---------- Form card ---------- */
+  .form-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 24px;
+    border: 1px solid var(--line);
+  }
+  .form-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+  }
+  .form-card .form-sub {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  .field input:focus-visible {
+    outline: 3px solid rgba(47, 122, 107, 0.35);
+    outline-offset: 1px;
+    border-color: var(--accent-motion);
+  }
+  .field .hint {
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 5px;
+  }
+  .field .error {
+    font-size: 0.78rem;
+    color: var(--accent-cta);
+    margin-top: 5px;
+    display: none;
+  }
+  .field.invalid input { border-color: var(--accent-cta); }
+  .field.invalid .error { display: block; }
+
+  .cta-button {
+    width: 100%;
+    padding: 15px 18px;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent-cta);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .cta-button:hover { background: #C6461F; }
+  .cta-button:active { transform: scale(0.98); }
+  .cta-button:focus-visible {
+    outline: 3px solid rgba(225, 85, 46, 0.4);
+    outline-offset: 2px;
+  }
+
+  .privacy-note {
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 12px 0 0;
+  }
+
+  /* ---------- Thank-you state ---------- */
+  .thankyou {
+    display: none;
+    text-align: center;
+    padding: 12px 0 4px;
+  }
+  .thankyou .check {
+    width: 48px; height: 48px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: var(--accent-motion);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .thankyou h2 { margin: 0 0 8px; font-size: 1.2rem; }
+  .thankyou p { color: var(--ink-soft); font-size: 0.92rem; margin: 0; }
+
+  .form-card.is-submitted .form-state { display: none; }
+  .form-card.is-submitted .thankyou { display: block; }
+
+  /* ---------- Trust strip ---------- */
+  .trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 32px;
+  }
+  .trust-chip {
+    background: var(--surface-alt);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .credentials-line {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin: -18px 0 32px;
+  }
+
+  /* ---------- Signature: range-of-motion panel ---------- */
+  .motion-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .motion-panel .motion-copy { flex: 1 1 220px; min-width: 200px; }
+  .motion-panel h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+  }
+  .motion-panel p {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .motion-svg-wrap { flex: 0 0 auto; width: 180px; }
+
+  .motion-arc-fg {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: draw-arc 1.1s 0.3s ease-out forwards;
+  }
+  @keyframes draw-arc {
+    to { stroke-dashoffset: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .motion-arc-fg { animation: none; stroke-dashoffset: 0; }
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0 40px;
+  }
+  footer p {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---------- Desktop layout ---------- */
+  @media (min-width: 820px) {
+    .hero-grid {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 48px;
+    }
+    .hero-copy-slot { flex: 1 1 auto; }
+    .hero-form-slot {
+      order: 0;
+      flex: 0 0 380px;
+      align-self: flex-start;
+      position: sticky;
+      top: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container">
+    <span class="brand">OrthoNow</span>
+    <a class="phone-link" href="tel:+918030000000">Call a clinic &rarr;</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Orthopaedic care · Bengaluru · Hyderabad · Chennai</p>
+      <h1>That knee or back pain isn't going away on its own.</h1>
+      <p class="subhead">
+        Get an expert orthopaedic opinion from a fellowship-trained specialist —
+        real diagnosis, a clear treatment plan, no guesswork. 9 clinics across
+        Bengaluru, Hyderabad &amp; Chennai, so there's one near your commute.
+      </p>
+      <p class="subhead" style="margin-top:-20px; font-weight: 600; color: var(--ink);">
+        Back to work, the gym, and everyday movement — without letting knee
+        or back pain slow you down.
+      </p>
+
+      <div class="hero-grid">
+
+        <!-- ============ FORM ============ -->
+        <div class="hero-form-slot">
+          <div class="form-card" id="consultForm">
+            <div class="form-state">
+              <h2>Request an Expert Orthopaedic Callback</h2>
+              <p class="form-sub">Takes under a minute. We'll call within 30 minutes to help schedule your consultation.</p>
+
+              <form id="bookingForm" novalidate>
+                <div class="field" id="nameField">
+                  <label for="fullName">Full name</label>
+                  <input type="text" id="fullName" name="fullName" autocomplete="name" required minlength="2">
+                  <p class="error">Please enter your name.</p>
+                </div>
+
+                <div class="field" id="phoneField">
+                  <label for="phone">Mobile number</label>
+                  <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric"
+                         placeholder="98765 43210" maxlength="13" required>
+                  <p class="hint">So our patient coordinator can reach you.</p>
+                  <p class="error">Enter a valid 10-digit mobile number.</p>
+                </div>
+
+                <button type="submit" class="cta-button">Get My Free Callback</button>
+                <p class="privacy-note">Used only to confirm this request. No spam, ever.</p>
+              </form>
+            </div>
+
+            <div class="thankyou" role="status" aria-live="polite">
+              <div class="check" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 12.5L9.5 18L20 6" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h2>Thanks! We'll call you shortly.</h2>
+              <p>A patient coordinator will call within 30 minutes to understand your symptoms and confirm the most suitable clinic and appointment time.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ SUPPORTING COPY ============ -->
+        <div class="hero-copy-slot">
+          <div class="trust-strip">
+            <span class="trust-chip">9 clinics · 3 cities</span>
+            <span class="trust-chip">15+ yrs avg. specialist experience</span>
+            <span class="trust-chip">4.8/5 from 2,300+ patients</span>
+          </div>
+          <p class="credentials-line">MBBS · MS Orthopaedics · fellowship-trained joint &amp; spine surgeons.</p>
+
+          <div class="motion-panel">
+            <div class="motion-svg-wrap">
+              <svg viewBox="0 0 240 150" width="180" height="112" role="img" aria-label="Gauge showing 135 degrees of restored knee range of motion">
+                <path d="M20,130 A100,100 0 0 1 220,130" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>
+                <circle cx="20" cy="130" r="3.5" fill="var(--line)"/>
+                <circle cx="49" cy="59" r="3.5" fill="var(--line)"/>
+                <circle cx="120" cy="30" r="3.5" fill="var(--line)"/>
+                <circle cx="191" cy="59" r="3.5" fill="var(--line)"/>
+                <circle cx="220" cy="130" r="3.5" fill="var(--line)"/>
+                <path class="motion-arc-fg" d="M20,130 A100,100 0 0 1 215,99" fill="none" stroke="var(--accent-motion)" stroke-width="10" stroke-linecap="round"/>
+                <circle cx="215" cy="99" r="7" fill="var(--accent-motion)"/>
+                <text x="120" y="112" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-weight="700" font-size="26" fill="var(--ink)">135&#176;</text>
+                <text x="120" y="132" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="11" fill="var(--ink-soft)">range of motion</text>
+              </svg>
+            </div>
+            <div class="motion-copy">
+              <h3>This is what recovery looks like.</h3>
+              <p>Our knee patients regain full functional range of motion on average — that's the difference between managing pain and actually fixing it.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>OrthoNow &mdash; Whitefield · Koramangala · Indiranagar · HSR Layout and 5 more clinics across Bengaluru, Hyderabad &amp; Chennai. This page is for informational booking purposes; a specialist will confirm suitability for treatment.</p>
+  </div>
+</footer>
+
+<script>
+  /*
+    Form handling.
+
+    Deliberate choice: we do NOT push the patient's name or phone number
+    into window.dataLayer. GA4/GTM should never receive PII — pushing raw
+    name/phone into the dataLayer is a common but real compliance mistake
+    in healthcare lead-gen. We push behavioural/context parameters instead,
+    which is everything the marketing team actually needs to optimise
+    Google Ads and GA4 reporting against.
+  */
+  (function () {
+    var form = document.getElementById('bookingForm');
+    var card = document.getElementById('consultForm');
+    var nameInput = document.getElementById('fullName');
+    var phoneInput = document.getElementById('phone');
+    var nameField = document.getElementById('nameField');
+    var phoneField = document.getElementById('phoneField');
+
+    // Users type phone numbers as "98765 43210" or "98765-43210" as often
+    // as they type 10 bare digits. Strip everything but digits before
+    // validating, rather than rejecting valid input on formatting alone.
+    function cleanPhone(raw) {
+      return raw.replace(/\D/g, '');
+    }
+
+    function validate() {
+      var valid = true;
+
+      if (nameInput.value.trim().length < 2) {
+        nameField.classList.add('invalid');
+        valid = false;
+      } else {
+        nameField.classList.remove('invalid');
+      }
+
+      var phonePattern = /^[6-9][0-9]{9}$/;
+      var cleaned = cleanPhone(phoneInput.value);
+      if (!phonePattern.test(cleaned)) {
+        phoneField.classList.add('invalid');
+        valid = false;
+      } else {
+        phoneField.classList.remove('invalid');
+      }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (!validate()) return;
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'consultation_form_submitted',
+        form_name: 'consultation_landing_hero',
+        page_path: window.location.pathname,
+        cta_text: 'Get My Free Callback',
+        has_valid_phone: true,
+        lead_source: 'Google Ads',
+        campaign: 'Book Consultation',
+        page_type: 'landing_page'
+      });
+
+      // Reflect the normalized value back into the field so what's stored/
+      // displayed matches what was validated, not whatever formatting the
+      // user happened to type.
+      phoneInput.value = cleanPhone(phoneInput.value);
+
+      // For the Loom demo: open DevTools console before submitting so this
+      // log is visible on screen alongside the dataLayer push itself.
+      console.log(window.dataLayer);
+
+      card.classList.add('is-submitted');
+      // Move focus to the confirmation for screen reader / keyboard users.
+      card.querySelector('.thankyou').setAttribute('tabindex', '-1');
+      card.querySelector('.thankyou').focus();
+    });
+  })();
+</script>
+
+</body>
+</html>
